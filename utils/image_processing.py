@@ -154,7 +154,7 @@ def main():
     path='../data/test_images/solidWhiteCurve.jpg'
     video_path='../data/test_videos/test2.mp4'
     pro=image_processing()
-    pro.video_capture(video_path,show=True,save=True)
+    pro.video_capture(video_path,show=True,save=False)
 #    image=pro.single_img_read(path,show=True)
 #    pro.canny_edge_detect()
 #    pro.find_lanes()
