@@ -1,11 +1,11 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# #!/usr/bin/env python3
+# # -*- coding: utf-8 -*-
 """
 Created on Mon Jan  7 21:19:09 2019
 
 @author: Mohit Kumar Soni
 """
-#import the necessary modules
+# import the necessary modules
 import freenect
 import cv2
 import numpy as np
