@@ -40,3 +40,6 @@ for class_idx, ax in enumerate(ax_array.ravel()):
 plt.setp([a.get_xticklabels() for a in ax_array.ravel()], visible=False)
 plt.setp([a.get_yticklabels() for a in ax_array.ravel()], visible=False)
 plt.draw()
+
+
+#%%
