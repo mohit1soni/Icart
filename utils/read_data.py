@@ -1,6 +1,7 @@
+#%%
 import pickle
 import numpy
-
+#%%
 class read_data(object):
     def __init__(self,path,dataset,val=False):
         if val:
@@ -23,4 +24,5 @@ class read_data(object):
         train,test=self.read_traffic_sign_data()
         x_train,y_train=train['features'],train['labels']
         x_test,y_test=test['features'],test['labels']
+        return x_train,y_train,x_test,y_test
 
