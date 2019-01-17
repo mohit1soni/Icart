@@ -3,6 +3,9 @@
 #%%
 import numpy as np
 from utils import read_data as rd
+import cv2
+from sklearn.model_selection import train_test_split
+from keras.preprocessing.image import ImageDataGenerator
 import matplotlib.pyplot as plt
 %matplotlib inline
 #%%
@@ -41,5 +44,36 @@ plt.setp([a.get_xticklabels() for a in ax_array.ravel()], visible=False)
 plt.setp([a.get_yticklabels() for a in ax_array.ravel()], visible=False)
 plt.draw()
 
+#%%
+train_distribution,test_distribution = np.zeros(n_classes),np.zeros(n_classes)
+for c in range(n_classes):
+    train_distribution[c] = np.sum(y_train == c)/n_train
+    test_distribution[c] = np.sum(y_test == c) /n_test
+fig,ax = plt.subplots()
+col_width = 0.5
+bar_train =ax.bar(np.arange(n_classes),train_distribution,width=col_width,color= 'r') 
+bar_test =ax.bar(np.arange(n_classes)+col_width,test_distribution,width=col_width,color= 'b')
+ax.set_ylabel('PERCENTAGE OF Presence')
+ax.set_xlabel('Class Label')
+ax.set_title('Classes distribution in traffic-sign dataset')
+ax.set_xticks(np.arange(0,n_classes,5) + col_width)
+ax.set_xticklabels(['{:02d}'.format(c) for c in range(0,n_classes,5)])
+ax.legend((bar_train[0],bar_test[0]),('train_set','test_set'))
+plt.show()
 
+#%%
+def preprocess_freatures(X,equalize_hist=True):
+    X = np.array([np.expand_dims(cv2.cvtColor(rgb_img,
+    cv2.COLOR_RGB2YUV)[:,:,0],2) for rgb_img in X ])
+
+    if equalize_hist:
+        X=np.array([np.expand_dims(cv2.equalizeHist(np.uint8(img)),2) 
+        for img in X])
+    X = np.float32(X)
+    X -= np.mean(X,axis=0)
+    X /= (np.std(X,axis=0) + np.finfo('float32').eps)
+    return X
+#%%
+X_train_norm = preprocess_freatures(X_train)
+X_test_norm = preprocess_freatures(X_test)
 #%%
