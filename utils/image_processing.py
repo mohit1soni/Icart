@@ -160,16 +160,16 @@ class image_processing(object):
 
 
 def main():
-    # path='../data/test_images/solidWhiteCurve.jpg'
-    # video_path='../data/test_videos/test2.mp4'
-    images_path='../../Results/lane'
+    path='../data/test_images/solidWhiteCurve.jpg'
+    video_path='../data/test_videos/test2.mp4'
+    # images_path='../../Results/lane'
     pro=image_processing()
-    video_name='lane_object_detect.avi'
-    pro.make_video_from_images(images_path,video_name)
-    # pro.video_capture(video_path,show=True,save=True)
+    # video_name='lane_object_detect.avi'
+    # pro.make_video_from_images(images_path,video_name)
+    pro.video_capture(video_path,show=True,save=True)
 #    image=pro.single_img_read(path,show=True)
-#    pro.canny_edge_detect()
-#    pro.find_lanes()
+    pro.canny_edge_detect()
+    pro.find_lanes()
 
 if __name__ == '__main__':
     main()
