@@ -30,7 +30,7 @@ def readTrafficSigns(rootpath):
     # labels = [] # corresponding labels
     # shapes=[]
     # count_images=list()
-    # csv.register_dialect('md',delimiter=',',quoting=csv.QUOTE_NONE,skipinitialspace=True)
+    csv.register_dialect('md',delimiter=',',quoting=csv.QUOTE_NONE,skipinitialspace=True)
     # loop over all 42 classes
     i=0
     for c in range(0,43):
@@ -41,12 +41,14 @@ def readTrafficSigns(rootpath):
         next(gtReader)
     # skip header
     # loop over all images in current annotations file
-    # with open('test_labels.csv','a',newline='') as f:
-    #     writer=csv.writer(f,dialect='md')
-        for row in gtReader:
+        with open('train_labels.csv','a') as f:
+            writer=csv.writer(f,dialect='md')
+            for row in gtReader:
+                row[0]=row[0].replace(".ppm","_"+str(c)+".jpg")
+                writer.writerow(row)
             # images=Image.open(prefix+row[0])
             # images.save(prefix+row[0].replace(".ppm","_"+str(c)+".jpg"))
-            os.remove(prefix+row[0])
+            # os.remove(prefix+row[0])
             # images.append(plt.imread(prefix + row[0])) # the 1th column is the filename
             # labels.append(row[7]) # the 8th column is the label
             # shapes.append(row[1])
@@ -58,7 +60,7 @@ def readTrafficSigns(rootpath):
             # count_images.append(len(images[i]))
             # i +=1
             # writer.writerow(row)
-        gtFile.close()
+            gtFile.close()
 
     # shapes=np.reshape(shapes,(len(labels),6))
     # np.asarray(count_images)
