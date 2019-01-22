@@ -26,10 +26,10 @@ def readTrafficSigns(rootpath):
 
     Arguments: path to the traffic sign data, for example './GTSRB/Training'
     Returns:   list of images, list of corresponding labels'''
-    images = [] # images
-    labels = [] # corresponding labels
-    shapes=[]
-    count_images=list()
+    # images = [] # images
+    # labels = [] # corresponding labels
+    # shapes=[]
+    # count_images=list()
     csv.register_dialect('md',delimiter=',',quoting=csv.QUOTE_NONE,skipinitialspace=True)
     # loop over all 42 classes
     i=0
