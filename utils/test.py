@@ -202,7 +202,7 @@ if __name__ == '__main__':
                     video_display = False
             elif e.key == K_v:
                 with screen_lock:
-                    screen = pygame.display.set_mode(VIDEO_WINSIZE,0,32)    
+                    screen = pygame.display.set_mode(VIDEO_WINSIZE,0,32)
                     video_display = True
             elif e.key == K_s:
                 draw_skeleton = not draw_skeleton
