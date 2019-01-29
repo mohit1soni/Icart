@@ -1,4 +1,5 @@
 {
     "python.pythonPath": "C:\\Users\\MOHIT SONI\\Anaconda3\\python.exe",
-    "python.linting.pylintEnabled": false
+    "python.linting.pylintEnabled": false,
+    "git.ignoreLimitWarning": true
 }
