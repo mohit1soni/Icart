@@ -39,10 +39,13 @@ class Object_classifier(object):
     def read_from_webcam(self,window_name="objet_detection"):
         "This class is to read frames from camera and continuously passing it to the classifier and bounding box detector "
         cap=cv2.VideoCapture(0)
+        # cap.set(3,1024)
+        # cap.set(3,786)
         while True:
             ret,image_np = cap.read()
             image_np=self.make_bounding_box(image_np)
             cv2.imshow(window_name,cv2.resize(image_np,(800,600)))
+            # cv2.imshow(window_name,image_np)
             if cv2.waitKey(25) & 0XFF == ord('q'):
                 cv2.destroyAllWindows()
                 break
@@ -53,7 +56,7 @@ class Object_classifier(object):
         height=img.shape[1]
         self.boxes,self.scores,self.classes,self.num=self.get_classification(img)
         pil_image=Image.fromarray(img)
-        index= np.where(self.scores[0] >= 0.3)[0]
+        index= np.where(self.scores[0] >= 0.4)[0]
         class_ids=list()
         class_ids.append([int(self.classes[0,j]) for j in index])
         # print(class_ids[0])
@@ -70,8 +73,8 @@ class Object_classifier(object):
             draw = ImageDraw.Draw(pil_image)
             draw.line([(left, top), (left, bottom), (right, bottom),
                  (right, top), (left, top)], width=4, fill=color)
-        pil_image=np.array(pil_image)
-        return pil_image
+        np.copyto(img,np.array(pil_image))
+        return img
 
 def main():
     PATH_TO_MODEL='../Trained_model/frozen_inference_graph_coco.pb'
