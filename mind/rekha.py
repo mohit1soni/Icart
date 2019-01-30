@@ -6,14 +6,16 @@ import matplotlib.pyplot as plt
 import PIL.ImageDraw as ImageDraw
 import sys
 from PIL import Image
+import id_class_map as idmap
 
 sys.path.append("..")
 from utils import image_vislaisation_util as visual
 class Object_classifier(object):
     "This class is to colaborate all the trained model and make it as a single modules"
-    def __init__(self,PATH_TO_MODEL):
+    def __init__(self,PATH_TO_MODEL,model_name="coco"):
         self.PATH_TO_MODEL= PATH_TO_MODEL
         self.detection_graph=tf.Graph()
+        self.id_map=idmap.id_map(model_name)
         with self.detection_graph.as_default():
             od_graph_def=tf.GraphDef()
             with tf.gfile.GFile(PATH_TO_MODEL,'rb') as fid:
@@ -45,13 +47,18 @@ class Object_classifier(object):
                 cv2.destroyAllWindows()
                 break
 
-    def make_bounding_box(self,img,color='red'):
+    def make_bounding_box(self,img,color='blue'):
         """ This method makes the bounding boxes using the trained inference graphs"""
         width=img.shape[0]
         height=img.shape[1]
         self.boxes,self.scores,self.classes,self.num=self.get_classification(img)
         pil_image=Image.fromarray(img)
-        index= np.where(self.scores[0] >= 0.5)[0]
+        index= np.where(self.scores[0] >= 0.3)[0]
+        class_ids=list()
+        class_ids.append([int(self.classes[0,j]) for j in index])
+        # print(class_ids[0])
+        class_names=self.id_map.map(class_ids[0])
+        print(class_names)
         for i in index:
             score_of_Class=self.scores[0,i]
             class_id=self.classes[0,i]
