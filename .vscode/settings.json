@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "C:\\Users\\MOHIT SONI\\Anaconda3\\python.exe",
+    "python.pythonPath": "C:\\Users\\MOHIT SONI\\Anaconda3\\envs\\icart\\python.exe",
     "python.linting.pylintEnabled": false,
     "git.ignoreLimitWarning": true
 }
