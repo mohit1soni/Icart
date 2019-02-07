@@ -28,30 +28,29 @@ class Object_classifier(object):
             self.d_classes=self.detection_graph.get_tensor_by_name('detection_classes:0')
             self.num_d=self.detection_graph.get_tensor_by_name('num_detections:0')
         self.sess=tf.Session(graph=self.detection_graph)
-
     def get_classification(self,img):
         with self.detection_graph.as_default():
             img_expanded=np.expand_dims(img,axis=0)
             (boxes,scores,classes,num) = self.sess.run([self.d_boxes,self.d_scores,self.d_classes,self.num_d],
             feed_dict={self.image_tensor:img_expanded})
         return boxes,scores,classes,num
-
     def read_from_webcam(self,window_name="objet_detection"):
         "This class is to read frames from camera and continuously passing it to the classifier and bounding box detector "
-        # cap=cv2.VideoCapture('../data/test_videos/solidWhiteRight.mp4')
-        cap=cv2.VideoCapture(0)
+        cap=cv2.VideoCapture('../../data/video1.mp4')
+        # cap=cv2.VideoCapture(0)
+        # cap.set(cv2.CV_CAP_PROP_FPS, 15)
         # print("hello")
         # cap.set(3,800)
         # cap.set(4,600)
         while True:
             ret,image_np = cap.read()
             image_np=self.make_bounding_box(image_np)
-            cv2.imshow(window_name,cv2.resize(image_np,(800,600)))
+            cv2.imshow(window_name,cv2.resize(image_np,(1280,720)))
             # cv2.imshow(window_name,image_np)
+            # cv2.waitKey(50)
             if cv2.waitKey(25) & 0XFF == ord('q'):
                 cv2.destroyAllWindows()
                 break
-
     def make_bounding_box(self,img,color='blue'):
         """ This method makes the bounding boxes using the trained inference graphs"""
         # width=1200
@@ -61,7 +60,7 @@ class Object_classifier(object):
         draw = ImageDraw.Draw(pil_image)
         width,height=pil_image.size
 
-        index= np.where(self.scores[0] >= 0.2)[0]
+        index= np.where(self.scores[0] >= 0.5)[0]
         class_ids=list()
         class_ids.append([int(self.classes[0,j]) for j in index])
         # print(class_ids[0])
@@ -80,6 +79,8 @@ class Object_classifier(object):
                  (right, top), (left, top)], width=4, fill=color)
         np.copyto(img,np.array(pil_image))
         return img
+    def tracking_dyanmic(self):
+        pass
 
 def main():
     PATH_TO_MODEL='../Trained_model/frozen_inference_graph_coco.pb'
