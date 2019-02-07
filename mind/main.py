@@ -36,8 +36,8 @@ class Object_classifier(object):
         return boxes,scores,classes,num
     def read_from_webcam(self,window_name="objet_detection"):
         "This class is to read frames from camera and continuously passing it to the classifier and bounding box detector "
-        cap=cv2.VideoCapture('../../data/video1.mp4')
-        # cap=cv2.VideoCapture(0)
+        # cap=cv2.VideoCapture('../../data/video1.mp4')
+        cap=cv2.VideoCapture(0)
         # cap.set(cv2.CV_CAP_PROP_FPS, 15)
         # print("hello")
         # cap.set(3,800)
