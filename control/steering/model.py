@@ -34,7 +34,7 @@ log_dir=os.path.join(root_dir,'log')
 # Image Vriables
 height=256
 width=455
-batch_size=100
+batch_size=454
 num_classes=16+1+50
 
 # Network Variables
@@ -60,6 +60,7 @@ print(saved_model_dir)
 
 
 import tensorflow as tf
+slim = tf.contrib.slim
 
 steering=tf.Graph()
 print("Genration of Tensorflow Graph")
@@ -68,54 +69,54 @@ with steering.as_default():
     global_step=tf.Variable(0)
     with tf.name_scope('Inputs'):
         input_data=tf.placeholder(tf.float32,shape=(None,height,width,3),name="images_in")
-        input_labels=tf.placeholder(tf.float32,shape=(None),name="steeting_angle")
+        input_labels=tf.placeholder(tf.int32,shape=(None),name="steeting_angle")
         is_training=tf.placeholder_with_default(False,shape=())
         condition=tf.cast(is_training,tf.float32)
         pred=tf.less(condition,0.5)
-        one_hot=tf.one_hot(input_labels,num_classes,dtype=tf.float32,name="One_hot_labels")
+        one_hot=tf.one_hot(input_labels,num_classes,dtype=tf.int32,name="One_hot_labels")
         input_tensor=tf.subtract(tf.multiply(2.0,tf.divide(input_data,255.0)),1.0)
 
     with tf.name_scope("Driver_Net"):
         regularizer=tf.contrib.layers.l2_regularizer(scale=regularizer_scale)
-        net=tf.layers.conv2d(input_tensor,filters=3,karnel_size=5,strides=(2,2),padding='valid',activation=tf.nn.elu,name="layer0",kernel_regularizer=regularizer)
+        net=tf.layers.conv2d(input_tensor,3,5,strides=(2,2),padding='valid',activation=tf.nn.elu,name="layer0",kernel_regularizer=regularizer)
         net=tf.layers.dropout(net,rate=0.2)
 
-        net_mean,net_variance=tf.nn.moments(net,[0])
+        net_mean,net_variances=tf.nn.moments(net,[0])
         net = tf.nn.batch_normalization(net,mean=net_mean,variance=net_variances,offset=None,scale=None,variance_epsilon=0.001)
 
-        net=tf.layers.conv2d(net,filters=24,karnel_size=5,strides=(2,2),padding='valid',activation=tf.nn.elu,name="layer1",kernel_regularizer=regularizer)
+        net=tf.layers.conv2d(net,24,5,strides=(2,2),padding='valid',activation=tf.nn.elu,name="layer1",kernel_regularizer=regularizer)
         net=tf.layers.dropout(net,rate=0.2)
 
-        net_mean,net_variance=tf.nn.moments(net,[0])
+        net_mean,net_variances=tf.nn.moments(net,[0])
         net = tf.nn.batch_normalization(net,mean=net_mean,variance=net_variances,offset=None,scale=None,variance_epsilon=0.001)
 
-        net=tf.layers.conv2d(net,filters=36,karnel_size=5,strides=(2,2),padding='valid',activation=tf.nn.elu,name="layer2",kernel_regularizer=regularizer)
+        net=tf.layers.conv2d(net,36,5,strides=(2,2),padding='valid',activation=tf.nn.elu,name="layer2",kernel_regularizer=regularizer)
         net=tf.layers.dropout(net,rate=0.2)
 
-        net_mean,net_variance=tf.nn.moments(net,[0])
+        net_mean,net_variances=tf.nn.moments(net,[0])
         net = tf.nn.batch_normalization(net,mean=net_mean,variance=net_variances,offset=None,scale=None,variance_epsilon=0.001)
 
-        net=tf.layers.conv2d(net,filters=48,karnel_size=5,strides=(2,2),padding='valid',activation=tf.nn.elu,name="layer3",kernel_regularizer=regularizer)
+        net=tf.layers.conv2d(net,48,5,strides=(2,2),padding='valid',activation=tf.nn.elu,name="layer3",kernel_regularizer=regularizer)
         net=tf.layers.dropout(net,rate=0.2)
 
-        net=tf.layers.conv2d(net,filters=64,karnel_size=3,strides=(1,1),padding='valid',activation=tf.nn.elu,name="layer4")
+        net=tf.layers.conv2d(net,64,3,strides=(1,1),padding='valid',activation=tf.nn.elu,name="layer4")
         net=tf.layers.dropout(net,rate=0.2)
 
-        net=tf.layers.conv2d(net,filters=64,karnel_size=3,strides=(1,1),padding='valid',activation=tf.nn.elu,name="layer5")
+        net=tf.layers.conv2d(net,64,3,strides=(1,1),padding='valid',activation=tf.nn.elu,name="layer5")
         net=tf.layers.dropout(net,rate=0.2)
 
         net=tf.contrib.layers.flatten(net)
 
         net=tf.layers.dense(net,100,activation=tf.nn.elu,name='Dense_1')
-        net=tf.layers.dropout(net,rate=0.5,is_training=is_training)
+        net=tf.layers.dropout(net,rate=0.5,training=is_training)
 
-        net=tf.layers.dense(net,50,activation=tf.nn.elu,name='Dense_2')
-        net=tf.layers.dropout(net,rate=0.5,is_training=is_training)
+        # net=tf.layers.dense(net,50,activation=tf.nn.elu,name='Dense_2')
+        # net=tf.layers.dropout(net,rate=0.5,training=is_training)
 
-        net=tf.layers.dense(net,10,activation=tf.nn.elu,name='Dense_3')
-        net=tf.layers.dropout(net,rate=0.5,is_training=is_training)
+        # net=tf.layers.dense(net,10,activation=tf.nn.elu,name='Dense_3')
+        # net=tf.layers.dropout(net,rate=0.5,training=is_training)
 
-        output=tf.layers.dense(net,1,name="output_layer")
+        output=tf.layers.dense(net,num_classes,name="output_layer")
 
     with tf.name_scope("Training"):
         loss=tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=output,labels=one_hot),name="loss")
@@ -136,7 +137,7 @@ with steering.as_default():
         val_acc_summary=tf.summary.scalar('Validation_arruracy',val_acc*100)
 
         train_summary_merged=tf.summary.merge([train_acc_summary,training_loss_summery])
-        val_summary_merged=tf.summary.merge([val_acc_summary,val_loss_summery])
+        val_summary_merged=tf.summary.merge([val_acc_summary,val_loss_summary])
 
     saver=tf.train.Saver(max_to_keep=max_to_keep)
 
@@ -167,19 +168,19 @@ with tf.Session(graph=steering) as sess:
             # For the Display Purpose
             if batch_index%(batch_display_step) == 0 and epoch%(display_step)==0:
                 print('Epoch: %d <===>'%(epoch),
-                      '%.2f Percent Completed'%((batch_idx*100.0/num_train_batches)),
+                      '%.2f Percent Completed'%((batch_index*100.0/num_train_batch)),
                       '[Batch Size--> %d Images <===> Batch Process Time--> %.2f Seconds]'%(data.shape[0],time.time()-batch_start_time))
 
         if epoch%display_step == 0:
             # Calculating Validation Accuracy
-            random_index=np.random.randint(0,x_val.shape[0])
+            random_index=np.random.randint(0,num_val_batch)
             sample_val_data=np.load(x_val[random_index])
             sample_val_label=np.load(y_val[random_index])
             feed_dict={input_data:sample_val_data,input_labels:sample_val_label,is_training:False}
             val_accuracy,val_summary=sess.run([val_acc,val_summary_merged],feed_dict)
 
             # Calculating Training Accuracy
-            random_index=np.random.randint(0,x_val.shape[0])
+            random_index=np.random.randint(0,num_train_batch)
             sample_train_data=np.load(x_train[random_index])
             sample_train_label=np.load(y_train[random_index])
             feed_dict={input_data:sample_train_data,input_labels:sample_train_label,is_training:False}

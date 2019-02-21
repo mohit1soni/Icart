@@ -64,43 +64,42 @@ print(min_index,max_index)
 # print(type(labels[100,1]))
 ##  For the visualization of the data
 
-shorted_list=sorted(new_label,key=int)
-plt.hist(shorted_list,bins=30,histtype="step")
-plt.xlabel("Steering Angle")
-plt.ylabel("No of Occurance")
-plt.title("Data Visualization with Non-linear Binning Function")
-plt.savefig("../../Results/Bining_histogram_steering_Ang.png")
-plt.show()
+# shorted_list=sorted(new_label,key=int)
+# plt.hist(shorted_list,bins=30,histtype="step")
+# plt.xlabel("Steering Angle")
+# plt.ylabel("No of Occurance")
+# plt.title("Data Visualization with Non-linear Binning Function")
+# plt.savefig("../../Results/Bining_histogram_steering_Ang.png")
+# plt.show()
 
 ##  For the generation of data and labels
 
-# for i in range(n_batches):
-#     # batch=np.zeros((batch_size,img_height,img_width,n_channels))
-#     steering=np.zeros((batch_size),dtype=float)
-#     steering=new_label[i*batch_size:(i+1)*batch_size]
-#     # filename=labels[i*batch_size:(i+1)*batch_size,0]
-#     # for j in range(batch_size):
-#     #     batch[j,:,:,:]=cv2.imread(filename[j])
-#     # np.save(batch_save_path+"batch_"+str(i)+".npy",batch)
-#     print(i,end=" ")
-#     np.save(label_save_path+"label_"+str(i)+".npy",steering)
-#     # np.save(label_save_path+"filename_"+str(i)+".npy",filename)
+for i in range(n_batches):
+    # batch=np.zeros((batch_size,img_height,img_width,n_channels))
+    steering=np.zeros((batch_size),dtype=float)
+    steering=new_label[i*batch_size:(i+1)*batch_size]
+    # filename=labels[i*batch_size:(i+1)*batch_size,0]
+    # for j in range(batch_size):
+    #     batch[j,:,:,:]=cv2.imread(filename[j])
+    # np.save(batch_save_path+"batch_"+str(i)+".npy",batch)
+    print(i,end=" ")
+    np.save(label_save_path+"label_"+str(i)+".npy",steering)
+    # np.save(label_save_path+"filename_"+str(i)+".npy",filename)
 
 
 ##  For the testing of the generated batches and labels
 
-# batch1=np.load(batch_save_path+"batch_0.npy")
-# label1=np.load(label_save_path+"label_15.npy")
-# print(label1[10])
+batch1=np.load(batch_save_path+"batch_0.npy")
+label1=np.load(label_save_path+"label_15.npy")
+print(label1[10])
 
 
 
-## For showing an chosen image form the batch
+# For showing an chosen image form the batch
 
-# while(True):
-#     image=batch1[99,:,:,:].astype("uint8")
-#     cv2.imshow("image",image)
-#     if cv2.waitKey(25) & 0XFF==ord('f'):
-#         break
-
+while(True):
+    image=batch1[99,:,:,:].astype("uint8")
+    cv2.imshow("image",image)
+    if cv2.waitKey(25) & 0XFF==ord('f'):
+        break
 
