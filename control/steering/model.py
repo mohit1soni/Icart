@@ -12,7 +12,7 @@ label_save_path="../../../data/data_drive/"+"/labels/"
 batch_list = glob.glob(batch_save_path+"*.npy")
 label_list = glob.glob(label_save_path+"*.npy")
 
-x_train,x_val,y_train,y_val=train_test_split(batch_list,label_list,test_size=0.2,random_state=42,shuffle=False,stratify=None)
+x_train,x_val,y_train,y_val=train_test_split(batch_list,label_list,test_size=0.2,random_state=10,shuffle=False,stratify=None)
 
 # For showing an chosen image form the batch
 # data=np.load(x_train[0])
@@ -26,7 +26,7 @@ x_train,x_val,y_train,y_val=train_test_split(batch_list,label_list,test_size=0.2
 
 # Directory defination
 root_dir=os.getcwd()
-restore_from=os.path.join(root_dir,'saved_model','model_name')
+restore_from=os.path.join(root_dir,'saved_model','2019_02_22_04_00_50')
 log_dir=os.path.join(root_dir,'log')
 
 ## Variable Initialization
@@ -34,11 +34,11 @@ log_dir=os.path.join(root_dir,'log')
 # Image Vriables
 height=256
 width=455
-batch_size=454
+batch_size=100
 num_classes=16+1+50
 
 # Network Variables
-epochs=200
+epochs=100
 max_to_keep=4
 regularizer_scale=0.2
 display_step=1
@@ -54,8 +54,10 @@ now=datetime.now()
 time_stamp=now.strftime("%Y_%m_%d_%H_%M_%S")
 log_dir=os.path.join(log_dir,time_stamp)
 os.makedirs(log_dir)
-saved_model_dir=os.path.join(root_dir,'saved_model',time_stamp)
+saved_model_dir=os.path.join(root_dir,'saved_model')
+saved_model_dir=os.path.join(saved_model_dir,time_stamp)
 os.makedirs(saved_model_dir)
+
 print(saved_model_dir)
 
 
@@ -120,6 +122,8 @@ with steering.as_default():
 
     with tf.name_scope("Training"):
         loss=tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=output,labels=one_hot),name="loss")
+        loss=tf.reduce_mean(tf.squared_difference(output,input_labels),name="loss")
+        
         optimize=tf.train.AdadeltaOptimizer(learning_rate=learning_rate,name="optimizer").minimize(loss,global_step=global_step)
 
         #Summery Log
@@ -197,8 +201,8 @@ with tf.Session(graph=steering) as sess:
             print('[Epoch Process Time--> %.2f Seconds]'%(time.time()-epoch_start_time))
                 #--------------------------------------------------------------
         if epoch%save_model_step==0:
-            print('...Saving Checkpoint File in %s...'%(times_tamp))
-            saver.save(sess, saved_model,global_step=epoch)
+            print('...Saving Checkpoint File in %s...'%(time_stamp))
+            saver.save(sess, saved_model_dir,global_step=epoch)
     tf.train.write_graph(sess.graph,saved_model_dir,'model.pbtxt')
 
 

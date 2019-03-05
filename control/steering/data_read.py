@@ -13,11 +13,11 @@ labels_file=pd.read_csv("../../../data/driving_dataset/data.txt",delimiter=' ')
 def assign_bin(decimal_value,min_steer,max_steer):
     int_range=decimal_value
     if int(np.divide(int_range,10)) == 0:
-        return np.round(int_range)
+        return np.int32(np.round(int_range))
     else:
         new_int_range=np.divide(int_range,10)
         # print(new_int_range)
-        return np.round(new_int_range)
+        return np.int32(np.round(new_int_range))
 
 labels=np.asarray(labels_file['steer'],dtype=np.float32)
 min_steer=min(labels)
@@ -60,6 +60,8 @@ max_index=np.argmax(new_label)
 # # Just For Checking Purposes
 print(min_steer,max_steer)
 print(min_index,max_index)
+print(type(new_label[0]))
+
 # print(labels[min_index,1],labels[max_index,1])
 # print(type(labels[100,1]))
 ##  For the visualization of the data

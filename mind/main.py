@@ -36,7 +36,11 @@ class Object_classifier(object):
     def read_from_webcam(self,window_name="objet_detection"):
         "This class is to read frames from camera and continuously passing it to the classifier and bounding box detector "
         # cap=cv2.VideoCapture('../data/observation/observation_space.jpg')
-        cap=cv2.VideoCapture(0)
+        
+        cap=cv2.VideoCapture('../data/test_videos/solidWhiteRight.mp4')
+        # cap=cv2.VideoCapture(0)
+        # fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        # out = cv2.VideoWriter('output.avi', fourcc, 20.0, (640,480))
         # cap.set(cv2.CV_CAP_PROP_FPS, 15)
         # print("hello")
         # cap.set(3,800)
@@ -46,10 +50,12 @@ class Object_classifier(object):
             image_np=self.make_bounding_box(image_np)
             # cv2.imshow(window_name,cv2.resize(image_np,(1280,720)))
             cv2.imshow(window_name,image_np)
+            # out.write(image_np)
             # cv2.waitKey(50)
             if cv2.waitKey(25) & 0XFF == ord('q'):
                 cv2.destroyAllWindows()
                 break
+        out.release()
 
     def make_bounding_box(self,img,color='blue'):
         """ This method makes the bounding boxes using the trained inference graphs"""
@@ -92,14 +98,14 @@ def main():
     PATH_TO_MODEL='../Trained_model/frozen_inference_graph_coco.pb'
     # print("hello")
     traffic_signs=Object_classifier(PATH_TO_MODEL)
-    img_list=glob.glob("../data/observation/*.jpg")
+    # img_list=glob.glob("../data/observation/*.jpg")
     # traffic_signs.multiple_instance(img_list)
     traffic_signs.read_from_webcam()
 
-    # img_path='../data/observation/image_3.jpg'
+    # img_path='../data/test_images/solidWhiteRight.jpg'
     # img=cv2.imread(img_path)
     # img=traffic_signs.make_bounding_box(img)
-    # cv2.imwrite("new_image.jpg",img)
+    # cv2.imwrite("new_image1.jpg",img)
 
 if __name__ == "__main__":
     main()
