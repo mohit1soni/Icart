@@ -37,8 +37,8 @@ class Object_classifier(object):
         "This class is to read frames from camera and continuously passing it to the classifier and bounding box detector "
         # cap=cv2.VideoCapture('../data/observation/observation_space.jpg')
         
-        cap=cv2.VideoCapture('../data/test_videos/solidWhiteRight.mp4')
-        # cap=cv2.VideoCapture(0)
+        # cap=cv2.VideoCapture('../data/test_videos/solidWhiteRight.mp4')
+        cap=cv2.VideoCapture(0)
         # fourcc = cv2.VideoWriter_fourcc(*'XVID')
         # out = cv2.VideoWriter('output.avi', fourcc, 20.0, (640,480))
         # cap.set(cv2.CV_CAP_PROP_FPS, 15)
